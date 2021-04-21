@@ -27,7 +27,7 @@ export function Welcome() {
       <View style={styles.wrapper}>
         <Text style={styles.title}>
           Gerencie{'\n'}
-          sua plantas de{'\n'}
+          suas plantas de{'\n'}
           forma fácil
         </Text>
         <Image style={styles.image} source={wateringImg} resizeMode="contain" />
