@@ -6,6 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/core';
 import { EnvironmentButton } from '../components/EnvironmentButton';
 import { PlantCardPrimary } from '../components/PlantCardPrimary';
 import { Header } from '../components/Header';
@@ -15,34 +16,22 @@ import api from '../services/api';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 import { Load } from '../components/Load';
+import { PlantProps } from '../types';
 
 interface EnvironmentProps {
   key: string;
   title: string;
 }
 
-interface Plant {
-  id: string;
-  name: string;
-  about: string;
-  water_tips: string;
-  photo: string;
-  environments: string[];
-  frequency: {
-    times: number;
-    repeat_every: string;
-  };
-}
-
 export function PlantSelect() {
+  const navigation = useNavigation();
   const [environments, setEnvironments] = useState<EnvironmentProps[]>([]);
-  const [plants, setPlants] = useState<Plant[]>([]);
-  const [filteredPlants, setFilteredPlants] = useState<Plant[]>([]);
+  const [plants, setPlants] = useState<PlantProps[]>([]);
+  const [filteredPlants, setFilteredPlants] = useState<PlantProps[]>([]);
   const [selectedEnvironment, setSelectedEnvironment] = useState('all');
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
-  const [hasMoreDataToLoad, setHasMoreDataToLoad] = useState(false);
 
   async function fetchPlants() {
     const { data } = await api.get('plants', {
@@ -91,6 +80,10 @@ export function PlantSelect() {
     setLoadingMore(true);
     setPage(page + 1);
     fetchPlants();
+  }
+
+  function handlePlantSelect(plant: PlantProps) {
+    navigation.navigate('PlantSave', { plant });
   }
 
   useEffect(() => {
@@ -150,11 +143,11 @@ export function PlantSelect() {
       <View style={styles.plants}>
         <FlatList
           data={filteredPlants}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => String(item.id)}
           showsVerticalScrollIndicator={false}
           numColumns={2}
           columnWrapperStyle={{ justifyContent: 'space-between' }}
-          renderItem={({ item }) => <PlantCardPrimary data={item} />}
+          renderItem={({ item }) => <PlantCardPrimary data={item} onPress={() => handlePlantSelect(item)} />}
           onEndReachedThreshold={0.1}
           onEndReached={({ distanceFromEnd }) =>
             handleFetchMore(distanceFromEnd)
