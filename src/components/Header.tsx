@@ -5,23 +5,19 @@ import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
-export function Header() {
-  const [username, setUsername] = useState<string>();
+interface HeaderProps {
+  title: string;
+  subtitle: string;
+}
 
-  useEffect(() => {
-    async function loadUsernameFromStorage() {
-      const name = await AsyncStorage.getItem('@plantmanager:user');
-      setUsername(name || '');
-    }
-
-    loadUsernameFromStorage();
-  }, []);
+export function Header({ title, subtitle }: HeaderProps) {
+  
 
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.greeting}>Olá,</Text>
-        <Text style={styles.username}>{username}</Text>
+        <Text style={styles.greeting}>{title}</Text>
+        <Text style={styles.username}>{subtitle}</Text>
       </View>
       <Image source={{ uri: 'https://github.com/augustomarcelo.png' }} style={styles.image} />
     </View>
@@ -49,8 +45,8 @@ const styles = StyleSheet.create({
     lineHeight: 40,
   },
   image: {
-    width: 70,
-    height: 70,
+    width: 56,
+    height: 56,
     borderRadius: 35,
   },
 })
