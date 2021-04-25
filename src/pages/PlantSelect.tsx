@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EnvironmentButton } from '../components/EnvironmentButton';
 import { PlantCardPrimary } from '../components/PlantCardPrimary';
 import { Header } from '../components/Header';
@@ -32,6 +33,16 @@ export function PlantSelect() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
+  const [username, setUsername] = useState<string>();
+
+  useEffect(() => {
+    async function loadUsernameFromStorage() {
+      const name = await AsyncStorage.getItem('@plantmanager:user');
+      setUsername(name || '');
+    }
+
+    loadUsernameFromStorage();
+  }, []);
 
   async function fetchPlants() {
     const { data } = await api.get('plants', {
@@ -117,7 +128,7 @@ export function PlantSelect() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Header />
+        <Header title="Olá," subtitle={username || ''} />
 
         <Text style={styles.title}>Em qual ambiente</Text>
         <Text style={styles.subtitle}>você quer colocar sua planta?</Text>
