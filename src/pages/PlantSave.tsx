@@ -8,12 +8,15 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
+  StatusBar,
 } from 'react-native';
 import { SvgFromUri } from 'react-native-svg';
 import { useNavigation, useRoute } from '@react-navigation/core';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
 import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
 import { format, isBefore } from 'date-fns';
+import { EvilIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { Button } from '../components/Button';
 import waterdropImg from '../assets/waterdrop.png';
@@ -63,10 +66,11 @@ export function PlantSave() {
 
       navigation.navigate('Confirmation', {
         title: 'Tudo certo',
-        subtitle: 'Fique tranquilo, pois sempre vamos lembra-lo de cuidar da sua plantinha com muito cuidado.',
+        subtitle:
+          'Fique tranquilo, pois sempre vamos lembra-lo de cuidar da sua plantinha com muito cuidado.',
         buttonTitle: 'Muito obrigado',
         icon: 'hug',
-        nextScreen: 'MyPlants'
+        nextScreen: 'MyPlants',
       });
     } catch {
       Alert.alert('Não foi possível salvar a planta');
@@ -74,46 +78,67 @@ export function PlantSave() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.plantInfo}>
-        <SvgFromUri uri={plant.photo} height={150} width={150} />
-        <Text style={styles.plantName}>{plant.name}</Text>
-        <Text style={styles.plantAbout}>{plant.about}</Text>
-      </View>
-
-      <View style={styles.controller}>
-        <View style={styles.tipContainer}>
-          <Image source={waterdropImg} style={styles.tipImage} />
-          <Text style={styles.tipText}>{plant.water_tips}</Text>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.container}
+    >
+      <StatusBar barStyle="dark-content" backgroundColor={colors.shape} />
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <EvilIcons name="chevron-left" size={42} color={colors.heading} />
+        </TouchableOpacity>
+        <View style={styles.plantInfo}>
+          <SvgFromUri uri={plant.photo} height={210} width={210} />
+          <Text style={styles.plantName}>{plant.name}</Text>
+          <Text style={styles.plantAbout}>{plant.about}</Text>
         </View>
 
-        <Text style={styles.alertLabel}>
-          Escolha o melhor horário para ser lembrado
-        </Text>
+        <View style={styles.controller}>
+          <View style={styles.tipContainer}>
+            <Image source={waterdropImg} style={styles.tipImage} />
+            <Text style={styles.tipText}>{plant.water_tips}</Text>
+          </View>
 
-        {showDateTimePicker && (
-          <DateTimePicker
-            value={selectedDateTime}
-            mode="time"
-            display="spinner"
-            onChange={handleChangeTime}
-          />
-        )}
+          <Text style={styles.alertLabel}>
+            Escolha o melhor horário para ser lembrado
+          </Text>
 
-        {Platform.OS === 'android' && (
-          <TouchableOpacity
-            style={styles.dateTimePickerButton}
-            onPress={handleOpenDateTimePickerForAndroid}
-          >
-            <Text style={styles.dateTimePickerText}>
-              {`Mudar ${format(selectedDateTime, 'HH:mm')}`}
-            </Text>
-          </TouchableOpacity>
-        )}
+          {showDateTimePicker && (
+            <DateTimePicker
+              value={selectedDateTime}
+              mode="time"
+              display="spinner"
+              onChange={handleChangeTime}
+            />
+          )}
 
-        <Button title="Cadastrar planta" onPress={handleSavePlant} />
+          {Platform.OS === 'android' && (
+            <TouchableOpacity
+              onPress={handleOpenDateTimePickerForAndroid}
+            >
+              <LinearGradient
+                style={styles.dateTimePickerButton}
+                colors={['#F5FAF7', '#F0F0F0']}
+                start={[0.1, 1]}
+                end={[0.5, 1]}
+              >
+                <Text style={styles.timeValue}>
+                  {`${format(selectedDateTime, 'HH')} horas`}
+                </Text>
+                <Text style={styles.timeValue}>
+                  {`${format(selectedDateTime, 'mm')} min`}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+
+          <Button title="Cadastrar planta" onPress={handleSavePlant} />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -122,13 +147,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     backgroundColor: colors.shape,
+    position: 'relative',
+  },
+  backButton: {
+    position: 'absolute',
+    zIndex: 10,
+    top: 0,
+    left: 10,
   },
   plantInfo: {
     flex: 1,
     paddingHorizontal: 30,
-    paddingVertical: 50,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: colors.shape,
   },
   plantName: {
@@ -158,7 +189,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 20,
     position: 'relative',
-    bottom: 80,
+    bottom: 70,
   },
   tipImage: {
     width: 56,
@@ -169,23 +200,35 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     fontFamily: fonts.text,
     color: colors.blue,
-    fontSize: 17,
+    fontSize: 15,
   },
   alertLabel: {
     textAlign: 'center',
     fontFamily: fonts.complement,
     color: colors.heading,
     fontSize: 12,
-    marginBottom: 5,
   },
   dateTimePickerButton: {
-    width: '100%',
+    flexDirection: 'row',
+    alignSelf: 'center',
     alignItems: 'center',
-    paddingVertical: 20,
+    justifyContent: 'space-around',
+    paddingVertical: 4,
+    paddingHorizontal: 20,
+    marginTop: 16,
+    marginBottom: 30,
+    backgroundColor: colors.shape,
+    borderRadius: 10,
+    width: '71%',
   },
   dateTimePickerText: {
     color: colors.heading,
     fontSize: 24,
     fontFamily: fonts.text,
   },
+  timeValue: {
+    fontFamily: fonts.text,
+    color: colors.heading,
+    fontSize: 17,
+  }
 });
