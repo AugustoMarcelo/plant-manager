@@ -12,7 +12,7 @@
 
 ## 💡 About the project
 
-PlantManager is an application that manages plants, reminding you which, when and how each plant should be taken care of. Through the notifications, the application will inform which plant should receive attention!
+PlantManager is an application that manages plants, reminding you which, when and how each plant should be taken care of. Through the notifications, the application will inform which plant should receive attention! [Watch a video](https://youtu.be/vkC8ivU0tRg).
 
 ---
 
@@ -24,9 +24,9 @@ PlantManager is an application that manages plants, reminding you which, when an
   <img src="https://res.cloudinary.com/augustomarcelo/image/upload/v1619369267/plant-manager/AddPlant_jmrsfn.png" width="200" />
 </p>
 
-## ⚙ Technologies <a name="tecnologies"></a>
+## ⚙ Technologies <a name="technologies"></a>
 
-This project was developed during Next Level Week #5 (react-native trail) with the following technologies:
+This project was developed with the following technologies:
 
   - [React Native](https://reactnative.dev/)
   - [Expo](https://docs.expo.io/)
